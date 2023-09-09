@@ -7,7 +7,6 @@ import { usePaginatedTransactions } from "./hooks/usePaginatedTransactions"
 import { useTransactionsByEmployee } from "./hooks/useTransactionsByEmployee"
 import { EMPTY_EMPLOYEE } from "./utils/constants"
 import { Employee } from "./utils/types"
-import { getEmployees } from "./utils/requests"
 
 export function App() {
   const { data: employees, ...employeeUtils } = useEmployees()
@@ -24,8 +23,8 @@ export function App() {
     setIsLoading(true)
 
     await employeeUtils.fetchAll()
-
     setIsLoading(false)
+
     await paginatedTransactionsUtils.fetchAll()
   }, [employeeUtils, paginatedTransactionsUtils, transactionsByEmployeeUtils])
 
@@ -34,14 +33,14 @@ export function App() {
       paginatedTransactionsUtils.invalidateData()
       await transactionsByEmployeeUtils.fetchById(employeeId)
     },
-    [paginatedTransactionsUtils, transactionsByEmployeeUtils]
+    [paginatedTransactionsUtils, transactionsByEmployeeUtils, transactions]
   )
 
   useEffect(() => {
     if (employees === null && !employeeUtils.loading) {
       loadAllTransactions()
     }
-  }, [employeeUtils.loading, employees, loadAllTransactions])
+  }, [employeeUtils.loading, employees, loadAllTransactions, transactions])
 
   return (
     <Fragment>
